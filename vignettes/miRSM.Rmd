@@ -50,7 +50,8 @@ By using WGCNA method [11], we identify co-expressed gene modules from matched c
 ```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(200)], 
+                                  mRExp[, seq_len(200)])
 modulegenes_WGCNA
 ```
 
@@ -60,7 +61,9 @@ The gene modules are identified by using GFA method [12, 13] from matched ceRNA 
 ```{r, eval=FALSE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_GFA <- module_GFA(ceRExp, mRExp)
+modulegenes_GFA <- module_GFA(ceRExp[seq_len(15), seq_len(50)],
+                              mRExp[seq_len(15), seq_len(100)], 
+                              iter.max = 3000)
 ```
 
 ## module_igraph
@@ -69,8 +72,8 @@ By using 'igraph' package [14], we infer gene modules from matched ceRNA and mRN
 ```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_igraph <- module_igraph(ceRExp[, seq_len(100)],
-                                    mRExp[, seq_len(100)])
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(50)],
+                                    mRExp[, seq_len(50)])
 modulegenes_igraph
 ```
 
@@ -80,8 +83,8 @@ In the 'ProNet' package, we can select FN [15], MCL [16], LINKCOMM [17] and MCOD
 ```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(100)],
-                                    mRExp[, seq_len(100)])
+modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(50)],
+                                    mRExp[, seq_len(50)])
 modulegenes_ProNet
 ```
 
@@ -93,8 +96,8 @@ data(ceRExp)
 data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
-modulegenes_NMF <- module_NMF(ceRExp[, seq_len(100)],
-                              mRExp[, seq_len(100)])
+modulegenes_NMF <- module_NMF(ceRExp[, seq_len(20)],
+                              mRExp[, seq_len(20)])
 modulegenes_NMF
 ```
 
@@ -104,8 +107,8 @@ We Identify gene modules from matched ceRNA and mRNA expression data using a ser
 ```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_biclust <- module_biclust(ceRExp[, seq_len(100)],
-                                      mRExp[, seq_len(100)])
+modulegenes_biclust <- module_biclust(ceRExp[, seq_len(50)],
+                                      mRExp[, seq_len(50)])
 modulegenes_biclust
 ```
 
@@ -117,19 +120,13 @@ data(ceRExp)
 data(mRExp)
 data(miRExp)
 data(miRTarget)
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(200)], 
+                                  mRExp[, seq_len(200)])
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 10, num_shared_miRNAs                         = 3, pvalue.cutoff = 0.05, 
+                        modulegenes_WGCNA, nperms = 5, num_shared_miRNAs                         = 3, pvalue.cutoff = 0.05, 
                         method = "CC", CC.cutoff = 0.8)
-# Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
-miRSM_WGCNA_SCC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                         modulegenes_WGCNA, nperms = 10, 
-                         num_shared_miRNAs = 3, 
-                         pvalue.cutoff = 0.05, 
-                         method = "SCC", SCC.cutoff = 0.1)
 miRSM_WGCNA_CC
-miRSM_WGCNA_SCC
 ```
 
 
@@ -141,10 +138,11 @@ data(ceRExp)
 data(mRExp)
 data(miRExp)
 data(miRTarget)
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(200)], 
+                                  mRExp[, seq_len(200)])
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 10, 
+                        modulegenes_WGCNA, nperms = 5, 
                         method = "CC")
 miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
 miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes,                                                    Analysis.type ="FEA")

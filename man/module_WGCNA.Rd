@@ -8,11 +8,14 @@ module_WGCNA(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
   num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
+rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+rows are samples and columns are mRNAs.}
 
-\item{RsquaredCut}{Desired minimum scale free topology fitting index R^2 with interval [0 1].}
+\item{RsquaredCut}{Desired minimum scale free topology fitting index 
+R^2 with interval [0 1].}
 
 \item{num.ModuleceRs}{The minimum number of ceRNAs in each module.}
 
@@ -28,12 +31,13 @@ expression data using WGCNA package
 \examples{
 data(ceRExp)
 data(mRExp)
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(200)], 
+    mRExp[, seq_len(200)])
 
 }
 \references{
-Langfelder P, Horvath S. WGCNA: an R package for weighted correlation
-network analysis. BMC Bioinformatics. 2008, 9:559.
+Langfelder P, Horvath S. WGCNA: an R package for weighted 
+correlation network analysis. BMC Bioinformatics. 2008, 9:559.#'
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

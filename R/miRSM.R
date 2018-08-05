@@ -12,7 +12,8 @@ cluster <- function(graph, method = "MCL", expansion = 2, inflation = 2,
             names(membership) <- V(graph)$name
         }
         if (!is.null(outfile)) {
-            cluster.save(cbind(names(membership), membership), outfile = outfile)
+            cluster.save(cbind(names(membership), membership), 
+                         outfile = outfile)
         } else {
             return(membership)
         }
@@ -36,8 +37,9 @@ cluster <- function(graph, method = "MCL", expansion = 2, inflation = 2,
             j <- match(neighbors$name, V(graph)$name, nomatch = 0)
             adj[i, j] = 1
         }
-        lc <- mcl(adj, addLoops = TRUE, expansion = expansion, inflation = inflation,
-            allow1 = TRUE, max.iter = 100, ESM = FALSE)
+        lc <- mcl(adj, addLoops = TRUE, expansion = expansion, 
+            inflation = inflation, allow1 = TRUE, 
+            max.iter = 100, ESM = FALSE)
         lc$name <- V(graph)$name
         lc$Cluster <- lc$Cluster
 
@@ -59,7 +61,8 @@ cluster <- function(graph, method = "MCL", expansion = 2, inflation = 2,
         if (!is.null(V(graph)$name))
             names(membership) <- V(graph)$name
         if (!is.null(outfile)) {
-            cluster.save(cbind(names(membership), membership), outfile = outfile)
+            cluster.save(cbind(names(membership), membership), 
+                         outfile = outfile)
             invisible(NULL)
         } else {
             return(membership)
@@ -79,8 +82,9 @@ cluster.save <- function(membership, outfile) {
     } else if (grepl("\\.", filename)) {
         filename <- sub("\\.(?:.*)", ".txt", filename)
     }
-    write.table(membership, file = paste(wd, filename, sep = "/"), row.names = FALSE,
-        col.names = c("node", "cluster"), quote = FALSE)
+    write.table(membership, file = paste(wd, filename, sep = "/"), 
+                row.names = FALSE, col.names = c("node", "cluster"),
+                quote = FALSE)
 }
 
 ## Internal function mcode.vertex.weighting from ProNet package
@@ -222,7 +226,8 @@ mcode <- function(graph, vwp = 0.5, haircut = FALSE, fluff = FALSE, fdt = 0.8,
         complex.g <- induced.subgraph(graph, complex.g)
         if (any(is.loop(complex.g)))
             score <- ecount(complex.g)/choose(vcount(complex.g) + 1, 2) *
-                vcount(complex.g) else score <- ecount(complex.g)/choose(vcount(complex.g), 2) *
+                vcount(complex.g) 
+        else score <- ecount(complex.g)/choose(vcount(complex.g), 2) *
             vcount(complex.g)
         return(score)
     }))
@@ -234,9 +239,12 @@ mcode <- function(graph, vwp = 0.5, haircut = FALSE, fluff = FALSE, fdt = 0.8,
 #' expression data using WGCNA package
 #'
 #' @title module_WGCNA
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param RsquaredCut Desired minimum scale free topology fitting index R^2 with interval [0 1].
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param RsquaredCut Desired minimum scale free topology fitting index 
+#' R^2 with interval [0 1].
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
 #' @import SummarizedExperiment
@@ -252,11 +260,12 @@ mcode <- function(graph, vwp = 0.5, haircut = FALSE, fluff = FALSE, fdt = 0.8,
 #' @examples
 #' data(ceRExp)
 #' data(mRExp)
-#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(200)], 
+#'     mRExp[, seq_len(200)])
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Langfelder P, Horvath S. WGCNA: an R package for weighted correlation
-#' network analysis. BMC Bioinformatics. 2008, 9:559.
+#' @references Langfelder P, Horvath S. WGCNA: an R package for weighted 
+#' correlation network analysis. BMC Bioinformatics. 2008, 9:559.#' 
 module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
     num.ModulemRs = 2) {
 
@@ -290,13 +299,18 @@ module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
 }
 
 
-#' Identification of gene modules from matched ceRNA and mRNA expression data using
-#' GFA package
+#' Identification of gene modules from matched ceRNA and mRNA 
+#' expression data using GFA package#' 
 #'
 #' @title module_GFA
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param StrengthCut Desired minimum strength (absolute value of association with interval [0 1]) for each bicluster.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param StrengthCut Desired minimum strength (absolute value of 
+#' association with interval [0 1]) for each bicluster.
+#' @param iter.max The total number of Gibbs sampling steps 
+#' (default 1000).
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
 #' @import SummarizedExperiment
@@ -309,14 +323,17 @@ module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
 #' @examples
 #' data(ceRExp)
 #' data(mRExp)
-#' modulegenes_GFA <- module_GFA(ceRExp[seq_len(30), seq_len(100)],
-#'     mRExp[seq_len(30), seq_len(100)])
+#' modulegenes_GFA <- module_GFA(ceRExp[seq_len(15), seq_len(50)],
+#'     mRExp[seq_len(15), seq_len(50)], iter.max = 3000)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics. 2016, 32(16):2457-63.
-#' @references Lepp\'{a}aho E, Ammad-ud-din M, Kaski S. GFA: exploratory analysis of multiple data sources with group factor analysis. J Mach Learn Res. 2017, 18(39):1-5.
-module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
-    num.ModulemRs = 2) {
+#' @references Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. 
+#' Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics. 2016, 32(16):2457-63.
+#' @references Lepp\'{a}aho E, Ammad-ud-din M, Kaski S. GFA: 
+#' exploratory analysis of multiple data sources with group factor 
+#' analysis. J Mach Learn Res. 2017, 18(39):1-5.
+module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, iter.max = 1000,
+    num.ModuleceRs = 2, num.ModulemRs = 2) {
 
     ExpData <- list(assay(ceRExp), assay(mRExp))
     names(ExpData) = c("ceRNA expression", "mRNA expression")
@@ -330,6 +347,7 @@ module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
 
     # Check for sampling chain convergence
     opts$convergenceCheck <- TRUE
+    opts$iter.max <- iter.max
 
     # Infer the model
     res <- gfa(norm$train, opts = opts)
@@ -355,14 +373,21 @@ module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
 }
 
 
-#' Identification of gene modules from matched ceRNA and mRNA expression data using igraph package
+#' Identification of gene modules from matched ceRNA and mRNA 
+#' expression data using igraph package
 #'
 #' @title module_igraph
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param cor.method The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.
-#' @param pos.p.value.cutoff The significant p-value cutoff of positive correlation.
-#' @param cluster.method The clustering method selected in \pkg{igraph} package, including 'betweenness', 'greedy' (default), 'infomap', 'prop', 'eigen', 'louvain', 'walktrap'.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param cor.method The method of calculating correlation selected, 
+#' including 'pearson' (default), 'kendall', 'spearman'.
+#' @param pos.p.value.cutoff The significant p-value cutoff of 
+#' positive correlation.
+#' @param cluster.method The clustering method selected in 
+#' \pkg{igraph} package, including 'betweenness', 'greedy' (default), 
+#' 'infomap', 'prop', 'eigen', 'louvain', 'walktrap'.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
 #' @import SummarizedExperiment
@@ -380,11 +405,12 @@ module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
 #' @examples
 #' data(ceRExp)
 #' data(mRExp)
-#' modulegenes_igraph <- module_igraph(ceRExp[, seq_len(100)],
-#'     mRExp[, seq_len(100)])
+#' modulegenes_igraph <- module_igraph(ceRExp[, seq_len(50)],
+#'     mRExp[, seq_len(50)])
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Csardi G, Nepusz T. The igraph software package for complex network research, InterJournal, Complex Systems. 2006:1695.
+#' @references Csardi G, Nepusz T. The igraph software package for 
+#' complex network research, InterJournal, Complex Systems. 2006:1695.
 module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01,
     cluster.method = "greedy", num.ModuleceRs = 2, num.ModulemRs = 2) {
 
@@ -419,14 +445,21 @@ module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 }
 
 
-#' Identification of gene modules from matched ceRNA and mRNA expression data using ProNet package
+#' Identification of gene modules from matched ceRNA and mRNA 
+#' expression data using ProNet package
 #'
 #' @title module_ProNet
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param cor.method The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.
-#' @param pos.p.value.cutoff The significant p-value cutoff of positive correlation
-#' @param cluster.method The clustering method selected in \pkg{ProNet} package, including 'FN', 'MCL' (default), 'LINKCOMM', 'MCODE'.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param cor.method The method of calculating correlation selected, 
+#' including 'pearson' (default), 'kendall', 'spearman'.
+#' @param pos.p.value.cutoff The significant p-value cutoff of 
+#' positive correlation
+#' @param cluster.method The clustering method selected in 
+#' \pkg{ProNet} package, including 'FN', 'MCL' (default), 
+#' 'LINKCOMM', 'MCODE'.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
 #' @import SummarizedExperiment
@@ -440,14 +473,23 @@ module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' @examples
 #' data(ceRExp)
 #' data(mRExp)
-#' modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(100)],
-#'     mRExp[, seq_len(100)])
+#' modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(50)],
+#'     mRExp[, seq_len(50)])
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
-#' @references Enright AJ, Van Dongen S, Ouzounis CA. An efficient algorithm for large-scale detection of protein families. Nucleic Acids Res., 2002, 30(7):1575-84.
-#' @references Kalinka AT, Tomancak P. linkcomm: an R package for the generation, visualization, and analysis of link communities in networks of arbitrary size and type. Bioinformatics, 2011, 27(14):2011-2.
-#' @references Bader GD, Hogue CW. An automated method for finding molecular complexes in large protein interaction networks. BMC Bioinformatics, 2003, 4:2.
+#' @references Clauset A, Newman ME, Moore C. Finding community 
+#' structure in very large networks. Phys Rev E Stat Nonlin Soft 
+#' Matter Phys., 2004, 70(6 Pt 2):066111.
+#' @references Enright AJ, Van Dongen S, Ouzounis CA. An efficient 
+#' algorithm for large-scale detection of protein families. 
+#' Nucleic Acids Res., 2002, 30(7):1575-84.
+#' @references Kalinka AT, Tomancak P. linkcomm: an R package 
+#' for the generation, visualization, and analysis of link 
+#' communities in networks of arbitrary size and type. 
+#' Bioinformatics, 2011, 27(14):2011-2.
+#' @references Bader GD, Hogue CW. An automated method for 
+#' finding molecular complexes in large protein interaction 
+#' networks. BMC Bioinformatics, 2003, 4:2.
 module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01,
     cluster.method = "MCL", num.ModuleceRs = 2, num.ModulemRs = 2) {
 
@@ -484,12 +526,17 @@ module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 }
 
 
-#' Identification of gene modules from matched ceRNA and mRNA expression data using NMF package
+#' Identification of gene modules from matched ceRNA and mRNA 
+#' expression data using NMF package
 #'
 #' @title module_NMF
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param NMF.algorithm Specification of the NMF algorithm, including 'brunet' (default), 'Frobenius', 'KL', 'lee', 'nsNMF', 'offset', 'siNMF', 'snmf/l', 'snmf/r'.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param NMF.algorithm Specification of the NMF algorithm, 
+#' including 'brunet' (default), 'Frobenius', 'KL', 'lee', 'nsNMF', 
+#' 'offset', 'siNMF', 'snmf/l', 'snmf/r'.
 #' @param num.modules The number of modules to be identified.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
@@ -504,11 +551,12 @@ module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' data(mRExp)
 #' # Reimport NMF package to avoid conflicts with DelayedArray package
 #' library(NMF)
-#' modulegenes_NMF <- module_NMF(ceRExp[, seq_len(100)],
-#'     mRExp[, seq_len(100)])
+#' modulegenes_NMF <- module_NMF(ceRExp[, seq_len(20)],
+#'     mRExp[, seq_len(20)])
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references  Gaujoux R, Seoighe C. A flexible R package for nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
+#' @references  Gaujoux R, Seoighe C. A flexible R package for 
+#' nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
 module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10,
     num.ModuleceRs = 2, num.ModulemRs = 2) {
 
@@ -536,12 +584,21 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 }
 
 
-#' Identification of gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust, runibic, iBBiG, fabia, BicARE, isa2, s4vd, BiBitR and rqubic
+#' Identification of gene modules from matched ceRNA and mRNA 
+#' expression data using a series of biclustering packages, 
+#' including biclust, runibic, iBBiG, fabia, BicARE, isa2, s4vd, 
+#' BiBitR and rqubic
 #'
 #' @title module_biclust
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param BCmethod Specification of the biclustering method, including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 'BCSpectral', 'BCXmotifs', 'iBBiG', 'fabia', 'fabiap', 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param BCmethod Specification of the biclustering method, 
+#' including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
+#' 'BCSpectral', 'BCXmotifs', 'iBBiG', 'fabia', 'fabiap', 
+#' 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 
+#' 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.
 #' @param num.modules The number of modules to be identified.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
@@ -583,24 +640,56 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' @examples
 #' data(ceRExp)
 #' data(mRExp)
-#' modulegenes_biclust <- module_biclust(ceRExp[, seq_len(100)],
-#'     mRExp[, seq_len(100)])
+#' modulegenes_biclust <- module_biclust(ceRExp[, seq_len(50)],
+#'     mRExp[, seq_len(50)])
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Preli\'{c} A, Bleuler S, Zimmermann P, Wille A, B\'{u}hlmann P, Gruissem W, Hennig L, Thiele L, Zitzler E. A systematic comparison and evaluation of biclustering methods for gene expression data. Bioinformatics. 2006, 22(9):1122-9.
-#' @references Cheng Y, Church GM. Biclustering of expression data. Proc Int Conf Intell Syst Mol Biol. 2000, 8:93-103.
-#' @references Turner H, Bailey T, Krzanowski W. Improved biclustering of microarray data demonstrated through systematic performance tests. Comput Stat Data Anal. 2003, 48(2): 235-254.
-#' @references Murali TM, Kasif S. Extracting conserved gene expression motifs from gene expression data. Pac Symp Biocomput. 2003:77-88.
-#' @references Kluger Y, Basri R, Chang JT, Gerstein M. Spectral biclustering of microarray data: coclustering genes and conditions. Genome Res. 2003, 13(4):703-16.
-#' @references Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential row-based biclustering algorithm for analysis of gene expression data. Sci Rep. 2016, 6:23466.
-#' @references Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. Bioinformatics. 2012, 28(19):2484-92.
-#' @references Hochreiter S, Bodenhofer U, Heusel M, Mayr A, Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, Talloen W, Bijnens L, G\'{o}hlmann HW, Shkedy Z, Clevert DA. FABIA: factor analysis for bicluster acquisition. Bioinformatics. 2010, 26(12):1520-7.
-#' @references Yang J, Wang H, Wang W, Yu, PS. An improved biclustering method for analyzing gene expression. Int J Artif Intell Tools. 2005, 14(5): 771-789.
-#' @references Bergmann S, Ihmels J, Barkai N. Iterative signature algorithm for the analysis of large-scale gene expression data. Phys Rev E Stat Nonlin Soft Matter Phys. 2003, 67(3 Pt 1):031902.
-#' @references Sill M, Kaiser S, Benner A, Kopp-Schneider A. Robust biclustering by sparse singular value decomposition incorporating stability selection. Bioinformatics. 2011, 27(15):2089-97.
-#' @references Lee M, Shen H, Huang JZ, Marron JS. Biclustering via sparse singular value decomposition. Biometrics. 2010, 66(4):1087-95.
-#' @references Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics. 2011, 27(19):2738-45.
-#' @references Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res. 2009, 37(15):e101.
+#' @references Preli\'{c} A, Bleuler S, Zimmermann P, Wille A, 
+#' B\'{u}hlmann P, Gruissem W, Hennig L, Thiele L, Zitzler E. 
+#' A systematic comparison and evaluation of biclustering methods 
+#' for gene expression data. Bioinformatics. 2006, 22(9):1122-9.
+#' @references Cheng Y, Church GM. Biclustering of expression data. 
+#' Proc Int Conf Intell Syst Mol Biol. 2000, 8:93-103.
+#' @references Turner H, Bailey T, Krzanowski W. Improved 
+#' biclustering of microarray data demonstrated through systematic 
+#' performance tests. Comput Stat Data Anal. 2003, 48(2): 235-254.
+#' @references Murali TM, Kasif S. Extracting conserved gene 
+#' expression motifs from gene expression data. 
+#' Pac Symp Biocomput. 2003:77-88.
+#' @references Kluger Y, Basri R, Chang JT, Gerstein M. 
+#' Spectral biclustering of microarray data: coclustering genes 
+#' and conditions. Genome Res. 2003, 13(4):703-16.
+#' @references Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential 
+#' row-based biclustering algorithm for analysis of gene expression 
+#' data. Sci Rep. 2016, 6:23466.
+#' @references Gusenleitner D, Howe EA, Bentink S, Quackenbush J, 
+#' Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. 
+#' Bioinformatics. 2012, 28(19):2484-92.
+#' @references Hochreiter S, Bodenhofer U, Heusel M, Mayr A, 
+#' Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, 
+#' Talloen W, Bijnens L, G\'{o}hlmann HW, Shkedy Z, Clevert DA. 
+#' FABIA: factor analysis for bicluster acquisition. 
+#' Bioinformatics. 2010, 26(12):1520-7.
+#' @references Yang J, Wang H, Wang W, Yu, PS. An improved 
+#' biclustering method for analyzing gene expression. 
+#' Int J Artif Intell Tools. 2005, 14(5): 771-789.
+#' @references Bergmann S, Ihmels J, Barkai N. Iterative 
+#' signature algorithm for the analysis of large-scale gene 
+#' expression data. Phys Rev E Stat Nonlin Soft Matter Phys. 
+#' 2003, 67(3 Pt 1):031902.
+#' @references Sill M, Kaiser S, Benner A, Kopp-Schneider A. 
+#' Robust biclustering by sparse singular value decomposition 
+#' incorporating stability selection. Bioinformatics. 2011, 
+#' 27(15):2089-97.
+#' @references Lee M, Shen H, Huang JZ, Marron JS. Biclustering 
+#' via sparse singular value decomposition. Biometrics. 2010, 
+#' 66(4):1087-95.
+#' @references Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. 
+#' A biclustering algorithm for extracting bit-patterns from 
+#' binary datasets. Bioinformatics. 2011, 27(19):2738-45.
+#' @references Li G, Ma Q, Tang H, Paterson AH, Xu Y. 
+#' QUBIC: a qualitative biclustering algorithm for analyses of 
+#' gene expression data. Nucleic Acids Res. 2009, 37(15):e101.
 module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
     num.ModuleceRs = 2, num.ModulemRs = 2) {
 
@@ -694,13 +783,18 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
 }
 
 
-#' Generation of positively correlated binary matrix between ceRNAs and mRNAs
+#' Generation of positively correlated binary matrix between 
+#' ceRNAs and mRNAs
 #'
 #' @title cor_binary
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param cor.method The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.
-#' @param pos.p.value.cutoff The significant p-value cutoff of positive correlation.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param cor.method The method of calculating correlation selected, 
+#' including 'pearson' (default), 'kendall', 'spearman'.
+#' @param pos.p.value.cutoff The significant p-value cutoff of 
+#' positive correlation.
 #' @import SummarizedExperiment
 #' @importFrom WGCNA cor
 #' @importFrom WGCNA corPvalueFisher
@@ -713,8 +807,11 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
 #' cor_binary_matrix <- cor_binary(ceRExp, mRExp)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Langfelder P, Horvath S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics. 2008, 9:559.
-cor_binary <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01) {
+#' @references Langfelder P, Horvath S. WGCNA: an R package for 
+#' weighted correlation network analysis. BMC Bioinformatics. 
+#' 2008, 9:559.
+cor_binary <- function(ceRExp, mRExp, cor.method = "pearson", 
+                       pos.p.value.cutoff = 0.01) {
 
     cor.r <- cor(assay(ceRExp), assay(mRExp), method = cor.method)
     cor.pvalue <- corPvalueFisher(cor.r, nSamples = dim(ceRExp)[1])
@@ -901,19 +998,30 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' Identify miRNA sponge modules using cannonical correlation (CC) and sensitivity cannonical correlation (SCC) methods
 #'
 #' @title miRSM
-#' @param miRExp A SummarizedExperiment object. miRNA expression data: rows are samples and columns are miRNAs.
-#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
-#' @param miRTarget A SummarizedExperiment object. Putative miRNA-target binding information.
-#' @param CandidateModulegenes List object: a list of candidate miRNA sponge modules.
-#' @param typex The columns of x unordered (type='standard') or ordered (type='ordered').
-#' @param typez The columns of z unordered (type='standard') or ordered (type='ordered').
+#' @param miRExp A SummarizedExperiment object. miRNA expression data: 
+#' rows are samples and columns are miRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param miRTarget A SummarizedExperiment object. Putative 
+#' miRNA-target binding information.
+#' @param CandidateModulegenes List object: a list of candidate 
+#' miRNA sponge modules.
+#' @param typex The columns of x unordered (type='standard') or 
+#' ordered (type='ordered').
+#' @param typez The columns of z unordered (type='standard') or 
+#' ordered (type='ordered').
 #' @param nperms The number of permutations.
-#' @param method The method selected to identify miRNA sponge modules, including 'CC' and 'SCC'.
-#' @param num_shared_miRNAs The number of common miRNAs shared by a group of ceRNAs and mRNAs.
-#' @param pvalue.cutoff The p-value cutoff of significant sharing of common miRNAs by a group of ceRNAs and mRNAs.
+#' @param method The method selected to identify miRNA sponge 
+#' modules, including 'CC' and 'SCC'.
+#' @param num_shared_miRNAs The number of common miRNAs shared 
+#' by a group of ceRNAs and mRNAs.
+#' @param pvalue.cutoff The p-value cutoff of significant sharing 
+#' of common miRNAs by a group of ceRNAs and mRNAs.
 #' @param CC.cutoff The cutoff of cannonical correlation for 'CC' method.
-#' @param SCC.cutoff The cutoff of sensitivity cannonical correlation for 'SCC' method.
+#' @param SCC.cutoff The cutoff of sensitivity cannonical correlation 
+#' for 'SCC' method.
 #' @import SummarizedExperiment
 #' @importFrom PMA CCA.permute
 #' @importFrom PMA CCA
@@ -926,18 +1034,18 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' data(mRExp)
 #' data(miRExp)
 #' data(miRTarget)
-#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(200)], 
+#'     mRExp[, seq_len(200)])
 #' # Identify miRNA sponge modules using cannonical correlation (CC)
 #' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10,
+#'                         modulegenes_WGCNA, nperms = 5,
 #'                         method = 'CC')
-#' # Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
-#' miRSM_WGCNA_SCC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                          modulegenes_WGCNA, nperms = 10,
-#'                          method = 'SCC')
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Witten DM, Tibshirani R, Hastie T. A penalized matrix decomposition, with applications to sparse principal components and canonical correlation analysis. Biostatistics. 2009, 10(3):515-34.
+#' @references Witten DM, Tibshirani R, Hastie T. A penalized matrix 
+#' decomposition, with applications to sparse principal components 
+#' and canonical correlation analysis. Biostatistics. 
+#' 2009, 10(3):515-34.
 miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     typex = "standard", typez = "standard", nperms = 100, method = c("CC",
         "SCC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, CC.cutoff = 0.8,
@@ -957,18 +1065,25 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 }
 
 
-#' Functional analysis of miRNA sponge modules, including functional enrichment and disease enrichment analysis
+#' Functional analysis of miRNA sponge modules, including functional 
+#' enrichment and disease enrichment analysis
 #'
 #' @title module_FA
 #' @param Modulelist List object: a list of miRNA sponge modules.
 #' @param GOont One of 'MF', 'BP', and 'CC' subontologies.
 #' @param Diseaseont One of 'DO', and 'DOLite' subontologies.
-#' @param KEGGorganism Organism, supported organism listed in http://www.genome.jp/kegg/catalog/org_list.html.
-#' @param Reactomeorganism Organism, one of 'human', 'rat', 'mouse', 'celegans', 'yeast', 'zebrafish', 'fly'.
+#' @param KEGGorganism Organism, supported organism listed 
+#' in http://www.genome.jp/kegg/catalog/org_list.html.
+#' @param Reactomeorganism Organism, one of 'human', 'rat', '
+#' mouse', 'celegans', 'yeast', 'zebrafish', 'fly'.
 #' @param OrgDb OrgDb
 #' @param padjustvaluecutoff A cutoff value of adjusted p-values.
-#' @param padjustedmethod Adjusted method of p-values, can select one of 'holm', 'hochberg', 'hommel', 'bonferroni', 'BH', 'BY', 'fdr', 'none'.
-#' @param Analysis.type The type of functional analysis selected, including 'FEA' (functional enrichment analysis) and 'DEA' (disease enrichment analysis).
+#' @param padjustedmethod Adjusted method of p-values, can select 
+#' one of 'holm', 'hochberg', 'hommel', 'bonferroni', 'BH', 'BY', 
+#' 'fdr', 'none'.
+#' @param Analysis.type The type of functional analysis selected, 
+#' including 'FEA' (functional enrichment analysis) and 'DEA' 
+#' (disease enrichment analysis).
 #' @importFrom miRsponge moduleFEA
 #' @importFrom miRsponge moduleDEA
 #' @export
@@ -990,7 +1105,10 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Zhang J (2017). miRsponge: Identification and analysis of miRNA sponge interaction networks and modules. R package version 1.2.0, (\url{https://github.com/zhangjunpeng411/miRsponge}).
+#' @references Zhang J (2017). miRsponge: Identification and analysis 
+#' of miRNA sponge interaction networks and modules. 
+#' R package version 1.2.0, 
+#' (\url{https://github.com/zhangjunpeng411/miRsponge}).
 module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO", KEGGorganism = "hsa",
     Reactomeorganism = "human", OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
     padjustedmethod = "BH", Analysis.type = c("FEA", "DEA")) {

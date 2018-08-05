@@ -4,15 +4,21 @@
 \alias{module_GFA}
 \title{module_GFA}
 \usage{
-module_GFA(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
-  num.ModulemRs = 2)
+module_GFA(ceRExp, mRExp, StrengthCut = 0.9, iter.max = 1000,
+  num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
+rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+rows are samples and columns are mRNAs.}
 
-\item{StrengthCut}{Desired minimum strength (absolute value of association with interval [0 1]) for each bicluster.}
+\item{StrengthCut}{Desired minimum strength (absolute value of 
+association with interval [0 1]) for each bicluster.}
+
+\item{iter.max}{The total number of Gibbs sampling steps 
+(default 1000).}
 
 \item{num.ModuleceRs}{The minimum number of ceRNAs in each module.}
 
@@ -22,20 +28,23 @@ module_GFA(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
 List object: a list of module genes.
 }
 \description{
-Identification of gene modules from matched ceRNA and mRNA expression data using
-GFA package
+Identification of gene modules from matched ceRNA and mRNA 
+expression data using GFA package#'
 }
 \examples{
 data(ceRExp)
 data(mRExp)
-modulegenes_GFA <- module_GFA(ceRExp[seq_len(30), seq_len(100)],
-    mRExp[seq_len(30), seq_len(100)])
+modulegenes_GFA <- module_GFA(ceRExp[seq_len(15), seq_len(50)],
+    mRExp[seq_len(15), seq_len(50)], iter.max = 3000)
 
 }
 \references{
-Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics. 2016, 32(16):2457-63.
+Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. 
+Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics. 2016, 32(16):2457-63.
 
-Lepp\'{a}aho E, Ammad-ud-din M, Kaski S. GFA: exploratory analysis of multiple data sources with group factor analysis. J Mach Learn Res. 2017, 18(39):1-5.
+Lepp\'{a}aho E, Ammad-ud-din M, Kaski S. GFA: 
+exploratory analysis of multiple data sources with group factor 
+analysis. J Mach Learn Res. 2017, 18(39):1-5.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
